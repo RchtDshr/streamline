@@ -7,10 +7,12 @@ import {
 import { AirtableIntegration } from './integrations/airtable';
 import { NotionIntegration } from './integrations/notion';
 import { DataForm } from './data-form';
+import { HubspotIntegration } from './integrations/slack';
 
 const integrationMapping = {
     'Notion': NotionIntegration,
     'Airtable': AirtableIntegration,
+    'HubSpot': HubspotIntegration
 };
 
 export const IntegrationForm = () => {
