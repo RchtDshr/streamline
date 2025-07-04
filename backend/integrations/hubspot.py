@@ -153,4 +153,9 @@ async def get_items_hubspot(credentials: str) -> List[IntegrationItem]:
     items = [create_integration_item_metadata_object(contact) for contact in contacts]
 
     print(f"\n✅ HubSpot Integration Items:\n{[item.__dict__ for item in items]}")
-    return items
+    readable_string = "\n".join([
+        f"{i+1}. {item.type} - {item.name} ({'in ' + item.parent_path_or_name if item.parent_path_or_name else 'ID: ' + item.id})"
+        for i, item in enumerate(items)
+    ])
+    print("readable_string", readable_string)
+    return readable_string

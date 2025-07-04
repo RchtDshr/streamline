@@ -42,7 +42,8 @@ export const IntegrationForm = () => {
             options={Object.keys(integrationMapping)}
             sx={{ width: 300, mt: 2 }}
             renderInput={(params) => <TextField {...params} label="Integration Type" />}
-            onChange={(e, value) => setCurrType(value)}
+            onChange={(e, value) => {setCurrType(value); setIntegrationParams({})}}
+            
         />
         </Box>
         {currType && 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Box,
     TextField,
@@ -9,6 +9,7 @@ import axios from 'axios';
 const endpointMapping = {
     'Notion': 'notion',
     'Airtable': 'airtable',
+    'Hubspot': 'hubspot' 
 };
 
 export const DataForm = ({ integrationType, credentials }) => {
@@ -26,15 +27,26 @@ export const DataForm = ({ integrationType, credentials }) => {
             alert(e?.response?.data?.detail);
         }
     }
-
+    useEffect(() => {
+        if (credentials && integrationType) {
+            handleLoad(); 
+        }
+    }, [credentials, integrationType]);
+    
     return (
         <Box display='flex' justifyContent='center' alignItems='center' flexDirection='column' width='100%'>
-            <Box display='flex' flexDirection='column' width='100%'>
+            <Box display='flex' flexDirection='column' width='100%' maxWidth='1200px'>
                 <TextField
                     label="Loaded Data"
-                    value={loadedData || ''}
-                    sx={{mt: 2}}
+                    value={loadedData ? JSON.stringify(loadedData, null, 2) : ''}
+                    sx={{
+                        mt: 2,
+                        width: '100%',
+                    }}
                     InputLabelProps={{ shrink: true }}
+                    multiline
+                    rows={10}
+                    fullWidth
                     disabled
                 />
                 <Button
