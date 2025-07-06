@@ -5,6 +5,8 @@ from integrations.airtable import authorize_airtable, get_items_airtable, oauth2
 from integrations.notion import authorize_notion, get_items_notion, oauth2callback_notion, get_notion_credentials
 from integrations.hubspot import authorize_hubspot, get_hubspot_credentials, get_items_hubspot, oauth2callback_hubspot
 
+from redis_client import add_key_value_redis, get_value_redis, delete_key_redis
+
 app = FastAPI()
 
 origins = [
@@ -41,6 +43,10 @@ async def get_airtable_credentials_integration(user_id: str = Form(...), org_id:
 async def get_airtable_items(credentials: str = Form(...)):
     return await get_items_airtable(credentials)
 
+@app.post('/integrations/airtable/disconnect')
+async def disconnect_airtable(user_id: str = Form(...), org_id: str = Form(...)):
+    await delete_key_redis(f'airtable_credentials:{org_id}:{user_id}')
+    return {'message': 'Airtable disconnected successfully.'}
 
 # Notion
 @app.post('/integrations/notion/authorize')
@@ -58,6 +64,11 @@ async def get_notion_credentials_integration(user_id: str = Form(...), org_id: s
 @app.post('/integrations/notion/load')
 async def get_notion_items(credentials: str = Form(...)):
     return await get_items_notion(credentials)
+
+@app.post('/integrations/notion/disconnect')
+async def disconnect_notion(user_id: str = Form(...), org_id: str = Form(...)):
+    await delete_key_redis(f'notion_credentials:{org_id}:{user_id}')
+    return {'message': 'Notion disconnected successfully.'}
 
 # HubSpot
 @app.post('/integrations/hubspot/authorize')
@@ -79,3 +90,8 @@ async def load_slack_data_integration(credentials: str = Form(...)):
 @app.post('/integrations/hubspot/load')
 async def get_hubspot_items(credentials: str = Form(...)):
     return await get_items_hubspot(credentials)
+
+@app.post('/integrations/hubspot/disconnect')
+async def disconnect_hubspot(user_id: str = Form(...), org_id: str = Form(...)):
+    await delete_key_redis(f'hubspot_credentials:{org_id}:{user_id}')
+    return {'message': 'HubSpot disconnected successfully.'}
