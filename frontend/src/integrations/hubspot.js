@@ -1,5 +1,3 @@
-// hubspot.js
-
 import { useState, useEffect } from 'react';
 import {
     Box,
@@ -37,7 +35,6 @@ export const HubspotIntegration = ({ user, org, integrationParams, setIntegratio
         }
     }
 
-    // Function to handle logic when the OAuth window closes
     const handleWindowClosed = async () => {
         try {
             const formData = new FormData();

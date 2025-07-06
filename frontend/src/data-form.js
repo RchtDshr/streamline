@@ -28,11 +28,11 @@ export const DataForm = ({ integrationType, credentials }) => {
         }
     }
     useEffect(() => {
-        if (credentials && integrationType) {
+        if (credentials && integrationType && !loadedData) {
             handleLoad(); 
         }
     }, [credentials, integrationType]);
-    
+
     return (
         <Box display='flex' justifyContent='center' alignItems='center' flexDirection='column' width='100%'>
             <Box display='flex' flexDirection='column' width='100%' maxWidth='1200px'>

@@ -32,8 +32,6 @@ authorization_url = (
 
 encoded_client_id_secret = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode()
 
-
-# Step 1: Authorization URL
 async def authorize_hubspot(user_id, org_id):
     state_data = {
         "state": secrets.token_urlsafe(32),
@@ -45,8 +43,6 @@ async def authorize_hubspot(user_id, org_id):
 
     return f"{authorization_url}&state={encoded_state}"
 
-
-# Step 2: Handle OAuth2 callback
 async def oauth2callback_hubspot(request: Request):
     if request.query_params.get("error"):
         raise HTTPException(status_code=400, detail=request.query_params.get("error"))
@@ -54,7 +50,7 @@ async def oauth2callback_hubspot(request: Request):
     code = request.query_params.get("code")
     encoded_state = request.query_params.get("state")
 
-    # ✅ Properly decode the URL-encoded JSON
+    # Properly decode the URL-encoded JSON
     decoded_state = urllib.parse.unquote(encoded_state)
     state_data = json.loads(decoded_state)
 
@@ -100,7 +96,6 @@ async def oauth2callback_hubspot(request: Request):
 
     return HTMLResponse(content=close_window_script)
 
-# Step 3: Retrieve Credentials
 async def get_hubspot_credentials(user_id, org_id):
     credentials = await get_value_redis(f"hubspot_credentials:{org_id}:{user_id}")
     if not credentials:
@@ -111,7 +106,6 @@ async def get_hubspot_credentials(user_id, org_id):
     return credentials
 
 
-# Step 4: Integration Item creation
 def create_integration_item_metadata_object(item: dict) -> IntegrationItem:
     props = item.get("properties", {})
     created_at = item.get("createdAt")
@@ -128,7 +122,6 @@ def create_integration_item_metadata_object(item: dict) -> IntegrationItem:
     )
 
 
-# Step 5: Fetch Items from HubSpot (Contacts)
 async def get_items_hubspot(credentials: str) -> List[IntegrationItem]:
     credentials = json.loads(credentials)
     access_token = credentials.get("access_token")
@@ -152,7 +145,7 @@ async def get_items_hubspot(credentials: str) -> List[IntegrationItem]:
     contacts = response.json().get("results", [])
     items = [create_integration_item_metadata_object(contact) for contact in contacts]
 
-    print(f"\n✅ HubSpot Integration Items:\n{[item.__dict__ for item in items]}")
+    print(f"\n HubSpot Integration Items:\n{[item.__dict__ for item in items]}")
     readable_string = "\n".join([
         f"{i+1}. {item.type} - {item.name} ({'in ' + item.parent_path_or_name if item.parent_path_or_name else 'ID: ' + item.id})"
         for i, item in enumerate(items)
