@@ -101,7 +101,7 @@ async def get_hubspot_credentials(user_id, org_id):
     if not credentials:
         raise HTTPException(status_code=400, detail="No credentials found.")
     credentials = json.loads(credentials)
-    # await delete_key_redis(f"hubspot_credentials:{org_id}:{user_id}")
+    await delete_key_redis(f"hubspot_credentials:{org_id}:{user_id}")
 
     return credentials
 
